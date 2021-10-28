@@ -29,15 +29,35 @@ all_parcels <- all_parcels %>%
 
 assessors_data <- read_csv(here("Data", "Cambridge_Property_Database_FY2021.csv"))
 
+overlays <- read_sf(here("Data", "CDD_ZoningOverlayDistricts.shp"))
+
+institutional_overlays <- overlays %>%
+  filter(Type == "Institutional")
+
 #join datasets by map-lot
 parcel_data <- merge(x = all_parcels, y = assessors_data, by.x = "ML", by.y = "Map/Lot")
 ```
 
+```{r institutional lots}
+#filter using state class codes (starting with 9 is institutional use)
+institutional_lots <- parcel_data %>%
+  filter(substr(StateClassCode, 1, 1) == 9)
+
+badPropClass = c("US Government", "DCR- State Parks and Rec", "Vacant City", "Vacant Local Education", "Improved City", "Vacant, Tax Title", "Vacant (Private Ed)", "Housing, Other", "Housing Authority", "Other Open Space", "Transportation Authority", "Utility Authority", "Vacnt Transport Authorit", "Vacant Utility Authority", "Improved Public Safety", "Imprvd County Admin", "121 Corporation", "Cemeteries")
+
+#remove unnecessary proeprty classes
+institutional_lots <- institutional_lots %>%
+  filter(!(PropertyClass %in% badPropClass))
+
+
+
+```
 
 ```{r plot, echo=FALSE}
-ggplot(parcel_data)+
+ggplot()+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
-  geom_sf()+
+  geom_sf(data = institutional_lots, aes(fill = PropertyClass), color = NA)+
+  geom_sf(data = institutional_overlays, fill = NA, size = .75) +
   theme_void()
 ```
 
