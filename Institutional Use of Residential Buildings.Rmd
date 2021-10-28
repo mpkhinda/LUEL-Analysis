@@ -1,0 +1,43 @@
+---
+title: "Institutional Use of Residential Buildings"
+author: "Matt Khinda"
+date: "10/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries, include = FALSE}
+library(sf)
+library(ggspatial)
+library(tidyverse)
+library(here)
+library(ggthemes)
+```
+
+```{r load data}
+all_parcels <- read_sf(here("Data", "ASSESSING_ParcelsFY2022.shp"))
+
+badML = c("-", "--", "---", "--MD", "--R", "--R1", "--RR", "--S11")
+
+#remove unassigned parcels
+all_parcels <- all_parcels %>%
+  filter(!(ML %in% badML))
+
+assessors_data <- read_csv(here("Data", "Cambridge_Property_Database_FY2021.csv"))
+
+#join datasets by map-lot
+parcel_data <- merge(x = all_parcels, y = assessors_data, by.x = "ML", by.y = "Map/Lot")
+```
+
+
+```{r plot, echo=FALSE}
+ggplot(parcel_data)+
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
+  geom_sf()+
+  theme_void()
+```
+
