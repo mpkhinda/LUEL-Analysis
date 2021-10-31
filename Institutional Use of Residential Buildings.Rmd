@@ -19,6 +19,8 @@ library(ggthemes)
 ```
 
 ```{r load data}
+all_buildings <- read_sf(here("Data", "BASEMAP_Buildings.shp"))
+
 all_parcels <- read_sf(here("Data", "ASSESSING_ParcelsFY2022.shp"))
 
 badML = c("-", "--", "---", "--MD", "--R", "--R1", "--RR", "--S11")
@@ -60,6 +62,14 @@ institutional_residential_lots <- institutional_lots %>%
 
 
 ```
+
+```{r buildings}
+ggplot()+
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
+  geom_sf(data=all_buildings, color = NA, fill = "black")
+
+```
+
 
 ```{r plot, echo=FALSE}
 ggplot()+
