@@ -61,13 +61,32 @@ institutional_residential_lots <- institutional_lots %>%
   filter(Exterior_Style %in% goodExteriorStyles | Exterior_occupancy == "SNGL-FAM-RES")
 
 
+#intersect buildings with institutional lots to get institutional buildings
+all_buildings <- all_buildings %>%
+  st_transform(crs = st_crs(institutional_lots))
+
+
+
+
+institutional_buildings <- all_buildings %>%
+  mutate(num_inst = lengths(st_intersects(all_buildings, institutional_lots))) %>%
+  mutate(has_inst = num_inst > 0) %>%
+  filter(has_inst == TRUE)
+
+ggplot()+
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
+  geom_sf(data = institutional_buildings) +
+  theme_map()
+
 ```
 
 ```{r buildings}
 ggplot()+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight")+
-  geom_sf(data=all_buildings, color = NA, fill = "black")
-
+  geom_sf(data = institutional_overlays, fill = NA, linetype = "dashed") +
+  geom_sf(data = institutional_lots, aes(fill = PropertyClass), color = NA)+
+  geom_sf(data=institutional_buildings, color = NA, fill = "black")+
+  theme_map()
 ```
 
 
