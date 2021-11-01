@@ -87,7 +87,7 @@ ggplot()+
   geom_sf(data=institutional_residential_buildings, aes(fill = "Institutionally-Owned Residential Buildings", color = "Institutionally-Owned Residential Buildings"), size = .2) + 
   scale_fill_manual(values = "red", name = " ")+
   scale_color_manual(values = "red", name = " ")+
-  labs(caption = "Data from Cambridge Open Data Portal", title = "There are 159 Institutionally-Owned Residential Buildings in Cambridge, MA") + 
+  labs(caption = "Data from Cambridge Open Data Portal", title = "There are an estimated 159 Institutionally-Owned Residential Buildings in Cambridge, MA") + 
   annotation_north_arrow(
     style = north_arrow_minimal, 
     height = unit(0.75, "cm"), 
